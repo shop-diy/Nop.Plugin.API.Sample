@@ -3,9 +3,9 @@ using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using NopCommerce.Api.AdapterLibrary;
-using NopCommerce.Api.SampleApplication.DTOs;
+using NopCommerce.Api.Connector.DTOs;
 
-namespace NopCommerce.Api.SampleApplication.Controllers
+namespace NopCommerce.Api.Connector.Controllers
 {
     public class CustomersController : Controller
     {

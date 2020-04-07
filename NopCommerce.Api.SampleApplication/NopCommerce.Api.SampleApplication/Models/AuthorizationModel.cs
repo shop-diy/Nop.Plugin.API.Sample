@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace NopCommerce.Api.SampleApplication.Models
+namespace NopCommerce.Api.Connector.Models
 {
     public class AuthorizationModel
     {

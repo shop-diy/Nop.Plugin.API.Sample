@@ -1,4 +1,4 @@
-﻿namespace NopCommerce.Api.SampleApplication.Parameters
+﻿namespace NopCommerce.Api.Connector.Parameters
 {
     public class AuthParameters
     {

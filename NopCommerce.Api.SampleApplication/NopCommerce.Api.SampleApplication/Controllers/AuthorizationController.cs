@@ -2,11 +2,11 @@
 using System.Net;
 using System.Web.Mvc;
 using Newtonsoft.Json;
-using NopCommerce.Api.SampleApplication.Managers;
-using NopCommerce.Api.SampleApplication.Models;
-using NopCommerce.Api.SampleApplication.Parameters;
+using NopCommerce.Api.Connector.Managers;
+using NopCommerce.Api.Connector.Models;
+using NopCommerce.Api.Connector.Parameters;
 
-namespace NopCommerce.Api.SampleApplication.Controllers
+namespace NopCommerce.Api.Connector.Controllers
 {
     public class AuthorizationController : Controller
     {

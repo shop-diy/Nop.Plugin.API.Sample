@@ -1,8 +1,8 @@
 ﻿using System;
 using NopCommerce.Api.AdapterLibrary;
-using NopCommerce.Api.SampleApplication.Parameters;
+using NopCommerce.Api.Connector.Parameters;
 
-namespace NopCommerce.Api.SampleApplication.Managers
+namespace NopCommerce.Api.Connector.Managers
 {
     public class AuthorizationManager
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace NopCommerce.Api.SampleApplication.DTOs
+namespace NopCommerce.Api.Connector.DTOs
 {
     public class CustomersRootObject
     {

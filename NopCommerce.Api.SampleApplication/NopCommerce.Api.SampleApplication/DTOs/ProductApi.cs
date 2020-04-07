@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace NopCommerce.Api.SampleApplication.DTOs
+namespace NopCommerce.Api.Connector.DTOs
 {
 
     public class ProductApi

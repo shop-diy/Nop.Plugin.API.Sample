@@ -3,9 +3,9 @@ using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using NopCommerce.Api.AdapterLibrary;
-using NopCommerce.Api.SampleApplication.DTOs;
+using NopCommerce.Api.Connector.DTOs;
 
-namespace NopCommerce.Api.SampleApplication.Controllers
+namespace NopCommerce.Api.Connector.Controllers
 {
     public class ProductsController : Controller
     {
@@ -38,11 +38,8 @@ namespace NopCommerce.Api.SampleApplication.Controllers
 
             var nopApiClient = new ApiClient(accessToken, serverUrl);
 
-            // we use anonymous type as we want to update only the last_name of the customer
-            // also the customer shoud be the cutomer property of a holder object as explained in the documentation
-            // https://github.com/SevenSpikes/api-plugin-for-nopcommerce/blob/nopcommerce-3.80/Customers.md#update-details-for-a-customer
-            // i.e: { customer : { last_name: "" } }
-            var productToUpdate = new { product = new { name = "test", price = "1.00" } };
+
+            var productToUpdate = new { product = new { name = "product name", price = "1.00" } };
             string productJson = JsonConvert.SerializeObject(productToUpdate);
 
             string jsonUrl = $"/api/products/{id}";

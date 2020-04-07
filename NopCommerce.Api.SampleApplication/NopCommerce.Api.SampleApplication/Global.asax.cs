@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace NopCommerce.Api.SampleApplication
+namespace NopCommerce.Api.Connector
 {
     public class MvcApplication : System.Web.HttpApplication
     {

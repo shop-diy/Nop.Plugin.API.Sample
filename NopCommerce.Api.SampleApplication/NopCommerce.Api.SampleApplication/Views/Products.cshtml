@@ -1,4 +1,4 @@
-﻿@model IEnumerable<NopCommerce.Api.SampleApplication.DTOs.ProductApi>
+﻿@model IEnumerable<NopCommerce.Api.Connector.DTOs.ProductApi>
 
 @{
     Layout = "Layout.cshtml";
@@ -7,6 +7,6 @@
 <ul>
     @foreach (var product in Model)
     {
-        <li>@product.Name - <a href="/UpdateProduct/@product.Name">Reset Last Name</a></li>     
+        <li>@product.Name - <a href="/UpdateProduct/@product.Name">Replace Product</a></li>     
     }
 </ul>

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace NopCommerce.Api.SampleApplication.DTOs
+namespace NopCommerce.Api.Connector.DTOs
 {
     // Simplified Customer dto object with only the first and last name
     public class CustomerApi

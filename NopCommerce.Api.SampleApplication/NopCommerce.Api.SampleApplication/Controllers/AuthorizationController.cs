@@ -24,20 +24,27 @@ namespace NopCommerce.Api.SampleApplication.Controllers
             {
                 try
                 {
-                    var nopAuthorizationManager = new AuthorizationManager(model.ClientId, model.ClientSecret, model.ServerUrl);
+                    var clientId = "8c105a5c-6597-4991-b1c9-f249087659eb";
+                    var clientSecret = "0677922b-ec11-49f0-b280-06af667f7994";
+                    var serverUrl = "https://fslportal.azurewebsites.net";
+                    var redirect = "http://localhost:49676/token";
+
+                    // For demo purposes this data is kept into the current Session, but in production environment you should keep it in your database
+                    Session["clientId"] = clientId;
+                    Session["clientSecret"] = clientSecret;
+                    Session["serverUrl"] = serverUrl;
+                    Session["redirectUrl"] = redirect;
+
+                    var nopAuthorizationManager = new AuthorizationManager(clientId, clientSecret, serverUrl);
 
                     var redirectUrl = Url.RouteUrl("GetAccessToken", null, Request.Url.Scheme);
 
-                    if (redirectUrl != model.RedirectUrl)
-                    {
-                        return BadRequest();
-                    }
+                    //if (redirectUrl != model.RedirectUrl)
+                    //{
+                    //    return BadRequest();
+                    //}
 
-                    // For demo purposes this data is kept into the current Session, but in production environment you should keep it in your database
-                    Session["clientId"] = model.ClientId;
-                    Session["clientSecret"] = model.ClientSecret;
-                    Session["serverUrl"] = model.ServerUrl;
-                    Session["redirectUrl"] = redirectUrl;
+
 
                     // This should not be saved anywhere.
                     var state = Guid.NewGuid();
@@ -72,10 +79,10 @@ namespace NopCommerce.Api.SampleApplication.Controllers
                 try
                 {
                     // TODO: Here you should get the authorization user data from the database instead from the current Session.
-                    string clientId = Session["clientId"].ToString();
-                    string clientSecret = Session["clientSecret"].ToString();
-                    string serverUrl = Session["serverUrl"].ToString();
-                    string redirectUrl = Session["redirectUrl"].ToString();
+                    string clientId = "8c105a5c-6597-4991-b1c9-f249087659eb";
+                    string clientSecret = "0677922b-ec11-49f0-b280-06af667f7994";
+                    string serverUrl = "https://fslportal.azurewebsites.net";
+                    string redirectUrl = "http://localhost:49676/token";
 
                     var authParameters = new AuthParameters()
                     {

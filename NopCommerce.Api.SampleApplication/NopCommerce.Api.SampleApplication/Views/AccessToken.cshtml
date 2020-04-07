@@ -14,7 +14,7 @@
         var clientSecret = '@Model.UserAccessModel.ClientSecret';
 
         $("#refresh-token-button").click(function () {
-            
+
             var refreshToken = $("#refresh-token")[0].innerText;
             $.get('@Url.RouteUrl("RefreshAccessToken", null, Request.Url.Scheme)', {
 
@@ -49,7 +49,7 @@
                     <label for="serverUrl">Server url</label>
                 </td>
                 <td>
-                    <input name="serverUrl" type="text" id="serverUrl" value="@Model.UserAccessModel.ServerUrl" style="width:400px"/>
+                    <input name="serverUrl" type="text" id="serverUrl" value="@Model.UserAccessModel.ServerUrl" style="width:400px" />
                 </td>
             </tr>
             <tr>
@@ -57,7 +57,7 @@
                     <label for="clientId">Client Id</label>
                 </td>
                 <td>
-                    <input name="clientId" type="text" id="clientId" value="@Model.UserAccessModel.ClientId" style="width:400px"/>
+                    <input name="clientId" type="text" id="clientId" value="@Model.UserAccessModel.ClientId" style="width:400px" />
                 </td>
             </tr>
             <tr>
@@ -65,7 +65,7 @@
                     <label for="clientSecret">Client Secret</label>
                 </td>
                 <td>
-                    <input name="clientSecret" type="text" id="clientSecret" value="@Model.UserAccessModel.ClientSecret" style="width:400px"/>
+                    <input name="clientSecret" type="text" id="clientSecret" value="@Model.UserAccessModel.ClientSecret" style="width:400px" />
                 </td>
             </tr>
             <tr>
@@ -73,12 +73,12 @@
                     <label for="redirectUrl">Redirect Url</label>
                 </td>
                 <td>
-                    <input name="redirectUrl" type="text" id="redirectUrl" value="@Url.RouteUrl("GetAccessToken", null, Request.Url.Scheme)" readonly="readonly" value="@Model.UserAccessModel.RedirectUrl" style="width:400px"/>
+                    <input name="redirectUrl" type="text" id="redirectUrl" value="@Url.RouteUrl("GetAccessToken", null, Request.Url.Scheme)" readonly="readonly" value="@Model.UserAccessModel.RedirectUrl" style="width:400px" />
                 </td>
             </tr>
             <tr>
                 <td>
-                    <input type="submit" value="Get Access Token"/>
+                    <input type="submit" value="Get Access Token" />
                     <button type="button" id="refresh-token-button">Refresh Access Token</button>
                 </td>
             </tr>
@@ -106,3 +106,5 @@
 </div>
 
 @Html.RouteLink("Get Customers", "GetCustomers")
+
+@Html.RouteLink("Get Products", "GetProducts")

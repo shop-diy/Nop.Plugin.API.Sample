@@ -38,11 +38,25 @@ namespace NopCommerce.Api.SampleApplication
             );
 
             routes.MapRoute(
+               name: "GetProducts",
+               url: "products",
+               defaults: new { controller = "Products", action = "GetProducts" },
+               namespaces: new string[] { "NopCommerce.Api.SampleApplication.Controllers" }
+            );
+
+            routes.MapRoute(
                name: "UpdateCustomer",
                url: "updatecustomer/{customerId}",
                defaults: new { controller = "Customers", action = "UpdateCustomer", customerId = UrlParameter.Optional },
                namespaces: new string[] { "NopCommerce.Api.SampleApplication.Controllers" }
             );
+
+            routes.MapRoute(
+   name: "UpdateProduct",
+   url: "updateproduct/{customerId}",
+   defaults: new { controller = "Products", action = "UpdateProduct", customerId = UrlParameter.Optional },
+   namespaces: new string[] { "NopCommerce.Api.SampleApplication.Controllers" }
+);
 
             routes.MapRoute(
                 name: "Default",

@@ -47,6 +47,8 @@ namespace NopCommerce.Api.AdapterLibrary
 
             string queryParameters = string.Format("client_id={0}&client_secret={1}&code={2}&grant_type={3}&redirect_uri={4}", _clientId, _clientSecret, code, grantType, redirectUrl);
 
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(requestUriString);
             httpWebRequest.Method = "POST";
             httpWebRequest.ContentType = "application/x-www-form-urlencoded";

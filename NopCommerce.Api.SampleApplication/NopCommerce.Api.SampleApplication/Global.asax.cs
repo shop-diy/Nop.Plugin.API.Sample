@@ -9,6 +9,8 @@ namespace NopCommerce.Api.Connector
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            //StockItems.Get();
         }
     }
 }

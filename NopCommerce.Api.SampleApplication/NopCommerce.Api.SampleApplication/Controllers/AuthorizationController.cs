@@ -5,8 +5,9 @@ using Newtonsoft.Json;
 using NopCommerce.Api.Connector.Managers;
 using NopCommerce.Api.Connector.Models;
 using NopCommerce.Api.Connector.Parameters;
+using NopCommerce.Api.Connector;
 
-namespace NopCommerce.Api.Connector.Controllers
+namespace NopCommerce.Api.Connector
 {
     public class AuthorizationController : Controller
     {
@@ -29,7 +30,7 @@ namespace NopCommerce.Api.Connector.Controllers
                     var serverUrl = "https://fslportal.azurewebsites.net";
                     var redirect = "http://localhost:49676/token";
 
-                    // For demo purposes this data is kept into the current Session, but in production environment you should keep it in your database
+                    
                     Session["clientId"] = clientId;
                     Session["clientSecret"] = clientSecret;
                     Session["serverUrl"] = serverUrl;
@@ -43,7 +44,6 @@ namespace NopCommerce.Api.Connector.Controllers
                     //{
                     //    return BadRequest();
                     //}
-
 
 
                     // This should not be saved anywhere.
@@ -74,43 +74,14 @@ namespace NopCommerce.Api.Connector.Controllers
                     return BadRequest();
                 }
 
-                var model = new AccessModel();
-
+                AccessModel model;
                 try
                 {
-                    // TODO: Here you should get the authorization user data from the database instead from the current Session.
-                    string clientId = "8c105a5c-6597-4991-b1c9-f249087659eb";
-                    string clientSecret = "0677922b-ec11-49f0-b280-06af667f7994";
-                    string serverUrl = "https://fslportal.azurewebsites.net";
-                    string redirectUrl = "http://localhost:49676/token";
 
-                    var authParameters = new AuthParameters()
-                    {
-                        ClientId = clientId,
-                        ClientSecret = clientSecret,
-                        ServerUrl = serverUrl,
-                        RedirectUrl = redirectUrl,
-                        GrantType = "authorization_code",
-                        Code = code
-                    };
-
-                    var nopAuthorizationManager = new AuthorizationManager(authParameters.ClientId, authParameters.ClientSecret, authParameters.ServerUrl);
-
-                    string responseJson = nopAuthorizationManager.GetAuthorizationData(authParameters);
-
-                    AuthorizationModel authorizationModel = JsonConvert.DeserializeObject<AuthorizationModel>(responseJson);
-
-                    model.AuthorizationModel = authorizationModel;
-                    model.UserAccessModel = new UserAccessModel()
-                    {
-                        ClientId = clientId,
-                        ClientSecret = clientSecret,
-                        ServerUrl = serverUrl,
-                        RedirectUrl = redirectUrl
-                    };
+                    model = GetAuth(code);
 
                     // TODO: Here you can save your access and refresh tokens in the database. For illustration purposes we will save them in the Session and show them in the view.
-                    Session["accessToken"] = authorizationModel.AccessToken;
+                    Session["accessToken"] = model.AuthorizationModel.AccessToken;
                 }
                 catch (Exception ex)
                 {
@@ -121,6 +92,43 @@ namespace NopCommerce.Api.Connector.Controllers
             }
 
             return BadRequest();
+        }
+
+        public AccessModel GetAuth(string code)
+        {
+            var model = new AccessModel();
+
+            string clientId = "8c105a5c-6597-4991-b1c9-f249087659eb";
+            string clientSecret = "0677922b-ec11-49f0-b280-06af667f7994";
+            string serverUrl = "https://fslportal.azurewebsites.net";
+            string redirectUrl = "http://localhost:49676/token";
+
+            var authParameters = new AuthParameters()
+            {
+                ClientId = clientId,
+                ClientSecret = clientSecret,
+                ServerUrl = serverUrl,
+                RedirectUrl = redirectUrl,
+                GrantType = "authorization_code",
+                Code = code
+            };
+
+            var nopAuthorizationManager = new AuthorizationManager(authParameters.ClientId, authParameters.ClientSecret, authParameters.ServerUrl);
+
+            string responseJson = nopAuthorizationManager.GetAuthorizationData(authParameters);
+
+            AuthorizationModel authorizationModel = JsonConvert.DeserializeObject<AuthorizationModel>(responseJson);
+
+            model.AuthorizationModel = authorizationModel;
+            model.UserAccessModel = new UserAccessModel()
+            {
+                ClientId = clientId,
+                ClientSecret = clientSecret,
+                ServerUrl = serverUrl,
+                RedirectUrl = redirectUrl
+            };
+
+            return model;
         }
 
         [HttpGet]

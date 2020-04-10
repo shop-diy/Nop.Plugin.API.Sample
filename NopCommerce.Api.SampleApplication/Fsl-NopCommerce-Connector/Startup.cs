@@ -24,6 +24,7 @@ namespace Fsl.NopCommerce.Api.Connector
             services.AddHttpContextAccessor();
             services.AddHttpClient<NopCommerceApiService>();
             services.AddScoped<CustomerRepository, CustomerRepository>();
+            services.AddScoped<ProductRepository, ProductRepository>();
             services.AddControllers();
         }
 

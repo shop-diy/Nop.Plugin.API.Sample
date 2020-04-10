@@ -168,7 +168,7 @@ namespace Fsl.NopCommerce.Api.Connector.Services
                 {
                     var httpContent = CreateHttpContent(callParams);
 
-                    if (httpContent == null)
+                    if (httpContent != null)
                     {
                         httpRequest.Content = httpContent;
                     }

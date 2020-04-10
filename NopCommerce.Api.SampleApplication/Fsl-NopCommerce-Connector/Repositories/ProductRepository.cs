@@ -116,7 +116,7 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
                         product = new
                         {
                             name = description,
-                            full_description = content,
+                            //full_description = content,
                             price = msrp,
                             sku = inventoryId,
                             //images = new[] { new { id = 0, picture_id = 0, position = 0, src = "http://fsl-public.imgix.net/_accessories/lens/1.5/1.png?auto=format&fit=clip&w=470&h=313", attachment = "" } }
@@ -124,11 +124,11 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
                         }
                     };
 
-                    string productJson = JsonConvert.SerializeObject(productStructure);
+                    //string productJson = JsonConvert.SerializeObject(productStructure);
 
                     try
                     {
-                        await _api.Post($"/api/products", productJson);
+                        var response2 = await _api.Post($"/api/products", productStructure);
                     }
                     catch (HttpRequestException exHttpRequest)
                     {

@@ -10,5 +10,8 @@ namespace NopCommerce.Api.Connector.DTOs
 
         [JsonProperty("id")]
         public string Id { get; set; }
+
+        [JsonProperty("sku")]
+        public string Sku { get; set; }
     }
 }

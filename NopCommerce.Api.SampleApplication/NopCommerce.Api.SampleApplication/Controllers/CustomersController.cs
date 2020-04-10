@@ -11,8 +11,7 @@ namespace NopCommerce.Api.Connector.Controllers
     {
         public ActionResult GetCustomers()
         {
-            // TODO: Here you should get the data from your database instead of the current Session.
-            // Note: This should not be done in the action! This is only for illustration purposes.
+
             var accessToken = (Session["accessToken"] ?? TempData["accessToken"]).ToString();
             var serverUrl = (Session["serverUrl"] ?? TempData["serverUrl"]).ToString();
 

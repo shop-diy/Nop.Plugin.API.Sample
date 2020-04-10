@@ -33,7 +33,7 @@ namespace NopCommerce.Api.AdapterLibrary
 
             httpWebRequest.Method = ((object)method).ToString();
 
-            if (callParams != null)
+            if (!string.IsNullOrEmpty(callParams as string))
             {
                 if (method == HttpMethods.Get || method == HttpMethods.Delete)
                 {

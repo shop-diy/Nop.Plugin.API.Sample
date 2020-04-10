@@ -24,7 +24,7 @@ namespace NopCommerce.Api.Connector
             //https://riptutorial.com/acumatica/example/28801/data-export-in-a-single-rest-call
 
             ///ERP/entity/Default/17.200.001
-            using (RestService service = new RestService(@"http://192.168.1.11/ERP/", @"Default/17.200.001", @"FSLDEVELOPER", @"URQ\8WfP6yoY", @"FSL", null))
+            using (RestService service = new RestService(@"http://192.168.1.11/ERP/", @"Default/17.200.001", @"FSLDEVELOPER", @"pb[N7(kA", @"FSLTEST", null))
             {
                 string stockItems = service.GetList("StockItem");
 
@@ -32,19 +32,23 @@ namespace NopCommerce.Api.Connector
 
                 foreach(var stockItem in response)
                 {
-                    if (stockItem.ItemClass.value.ToString().Equals("MUSEPARTS"))
+                    if (stockItem.ABCCode.value.ToString().Equals("W"))
                     {
-                        decimal msrp;
+                        decimal msrp = 0;
                         var msrpstring = stockItem.MSRP?.value.ToString();
                         if(!string.IsNullOrEmpty(msrpstring))
                         {
                             msrp = decimal.Parse(msrpstring);
                         }
-                        
+                        var content = stockItem.Content?.value.ToString();
+
                         var description = stockItem.Description?.value.ToString();
                         var inventoryId = stockItem.InventoryID?.value.ToString();
-                        var itemStatus = stockItem.ItemStatus?.value.ToString();
+                        //var itemStatus = stockItem.ItemStatus?.value.ToString();
                         var imageUrl = stockItem.ImageURL?.value.ToString();
+
+                        var product = new { product = new { name = description, full_description = content, price = msrp } };
+                        string productJson = JsonConvert.SerializeObject(product);
                     }
                 }
             }

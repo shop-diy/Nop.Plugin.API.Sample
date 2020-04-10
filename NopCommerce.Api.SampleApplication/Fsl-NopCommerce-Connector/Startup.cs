@@ -5,11 +5,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Net;
+using System.Net.Http;
 
 namespace Fsl.NopCommerce.Api.Connector
 {
     public class Startup
     {
+        private const string JsonContentType = "application/json";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -22,7 +26,29 @@ namespace Fsl.NopCommerce.Api.Connector
         {
             services.AddMemoryCache();
             services.AddHttpContextAccessor();
-            services.AddHttpClient<NopCommerceApiService>();
+            services.AddHttpClient<NopCommerceApiService>()
+                .ConfigureHttpClient((sp, httpClient) =>
+                {
+                    // We can use sp here to get configuration via DI
+                    // and configure httpClient
+                    httpClient.DefaultRequestHeaders.Remove("Accept");
+                    httpClient.DefaultRequestHeaders.Add("Accept", JsonContentType);
+                    httpClient.DefaultRequestHeaders.Add("User-Agent", GetType().Assembly.GetName().Name);
+                });
+            services.AddHttpClient<AcumaticaApiService>()
+                .ConfigureHttpClient((sp, httpClient) =>
+                {
+                    // We can use sp here to get configuration via DI
+                    // and configure httpClient
+                    httpClient.DefaultRequestHeaders.Remove("Accept");
+                    httpClient.DefaultRequestHeaders.Add("Accept", JsonContentType);
+
+                })
+                .ConfigurePrimaryHttpMessageHandler(x => new HttpClientHandler
+                {
+                    UseCookies = true,
+                    CookieContainer = new CookieContainer()
+                });
             services.AddScoped<CustomerRepository, CustomerRepository>();
             services.AddScoped<ProductRepository, ProductRepository>();
             services.AddControllers();

@@ -23,108 +23,115 @@ namespace Fsl.NopCommerce.Api.Connector.Services
         private const string ServerUrl = "https://fslportal.azurewebsites.net";
         private const string JsonContentType = "application/json";
 
-        private readonly HttpClient _client;
+        private readonly HttpClient _httpClient;
         private readonly IMemoryCache _cache;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public NopCommerceApiService(
-            HttpClient client,
+            HttpClient httpClient,
             IMemoryCache cache,
             IHttpContextAccessor httpContextAccessor)
         {
-            client.BaseAddress = new Uri(ServerUrl);
-            client.DefaultRequestHeaders.Remove("Accept");
-            client.DefaultRequestHeaders.Add("Accept", JsonContentType);
-            client.DefaultRequestHeaders.Add("User-Agent", GetType().Assembly.GetName().Name);
+            httpClient.BaseAddress = new Uri(ServerUrl);
+            httpClient.DefaultRequestHeaders.Remove("Accept");
+            httpClient.DefaultRequestHeaders.Add("Accept", JsonContentType);
+            httpClient.DefaultRequestHeaders.Add("User-Agent", GetType().Assembly.GetName().Name);
 
-            _client = client;
+            _httpClient = httpClient;
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
-        public Task<string> Call(HttpMethod method, string path)
+        public Task<(HttpStatusCode statusCode, string data)> Call(HttpMethod method, string path)
         {
             return Call(method, path, string.Empty);
         }
 
-        public async Task<string> Call(HttpMethod method, string path, object callParams)
+        public async Task<(HttpStatusCode statusCode, string data)> Call(HttpMethod method, string path, object callParams)
         {
             using var httpResponse = await GetResponse(method, path, callParams);
 
-            httpResponse.EnsureSuccessStatusCode();
+            //httpResponse.EnsureSuccessStatusCode();
 
-            return await httpResponse.Content.ReadAsStringAsync();
+            var data = await httpResponse.Content.ReadAsStringAsync();
+
+            return (statusCode: httpResponse.StatusCode, data);
         }
 
-        public Task<T> Call<T>(HttpMethod method, string path)
+        public Task<(HttpStatusCode statusCode, T data)> Call<T>(HttpMethod method, string path)
         {
             return Call<T>(method, path, string.Empty);
         }
 
-        public async Task<T> Call<T>(HttpMethod method, string path, object callParams)
+        public async Task<(HttpStatusCode statusCode, T data)> Call<T>(HttpMethod method, string path, object callParams)
         {
             using var httpResponse = await GetResponse(method, path, callParams);
 
-            httpResponse.EnsureSuccessStatusCode();
+            //httpResponse.EnsureSuccessStatusCode();
 
-            using var responseStream = await httpResponse.Content.ReadAsStreamAsync();
+            T data = default;
 
-            var serializer = new JsonSerializer();
+            if (httpResponse.Content != null)
+            {
+                using var responseStream = await httpResponse.Content.ReadAsStreamAsync();
 
-            using var sr = new StreamReader(responseStream);
-            using var jsonTextReader = new JsonTextReader(sr);
+                var serializer = new JsonSerializer();
 
-            var result = serializer.Deserialize<T>(jsonTextReader);
+                using var sr = new StreamReader(responseStream);
+                using var jsonTextReader = new JsonTextReader(sr);
 
-            return result;
+                data = serializer.Deserialize<T>(jsonTextReader);
+            }
+
+            return (statusCode: httpResponse.StatusCode, data);
         }
 
-        public Task<string> Get(string path)
+        public Task<(HttpStatusCode statusCode, string data)> Get(string path)
         {
             return Get(path, null);
         }
 
-        public Task<string> Get(string path, NameValueCollection callParams)
+        public Task<(HttpStatusCode statusCode, string data)> Get(string path, NameValueCollection callParams)
         {
             return Call(HttpMethod.Get, path, callParams);
         }
 
-        public Task<T> Get<T>(string path)
+        public Task<(HttpStatusCode statusCode, T data)> Get<T>(string path)
         {
             return Get<T>(path, null);
         }
 
-        public Task<T> Get<T>(string path, NameValueCollection callParams)
+        public Task<(HttpStatusCode statusCode, T data)> Get<T>(string path, NameValueCollection callParams)
         {
             return Call<T>(HttpMethod.Get, path, callParams);
         }
 
-        public Task<string> Post(string path, object data)
+        public Task<(HttpStatusCode statusCode, string data)> Post(string path, object data)
         {
             return Call(HttpMethod.Post, path, data);
         }
 
-        public Task<T> Post<T>(string path, object data)
+        public Task<(HttpStatusCode statusCode, T data)> Post<T>(string path, object data)
         {
             return Call<T>(HttpMethod.Post, path, data);
         }
 
-        public Task<string> Put(string path, object data)
+        public Task<(HttpStatusCode statusCode, string data)> Put(string path, object data)
         {
             return Call(HttpMethod.Put, path, data);
         }
 
-        public Task<T> Put<T>(string path, object data)
+        public Task<(HttpStatusCode statusCode, T data)> Put<T>(string path, object data)
         {
             return Call<T>(HttpMethod.Put, path, data);
         }
 
-        public Task<string> Delete(string path)
+        public Task<(HttpStatusCode statusCode, string data)> Delete(string path)
         {
             return Call(HttpMethod.Delete, path);
         }
 
-        public Task<T> Delete<T>(string path)
+        public Task<(HttpStatusCode statusCode, T data)> Delete<T>(string path)
         {
             return Call<T>(HttpMethod.Delete, path);
         }
@@ -168,7 +175,7 @@ namespace Fsl.NopCommerce.Api.Connector.Services
                 }
             }
 
-            return _client
+            return _httpClient
                 .SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
         }
 

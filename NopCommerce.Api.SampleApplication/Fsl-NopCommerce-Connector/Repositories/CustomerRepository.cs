@@ -28,10 +28,10 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
         public async Task<CustomersRootObject> GetAll()
         {
             string jsonUrl = $"/api/customers?fields=id,first_name,last_name";
-            var result = await _api.Get<CustomersRootObject>(jsonUrl);
+            var (statuCode, data) = await _api.Get<CustomersRootObject>(jsonUrl);
 
 
-            return result;
+            return data;
         }
 
         public Task<CustomerApi> GetById(int id)
@@ -50,9 +50,9 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
             var customerToUpdate = new { customer = new { last_name = updated?.LastName } };
             string customerJson = JsonConvert.SerializeObject(customerToUpdate);
 
-            var result = await _api.Put(jsonUrl, customerJson);
+            var (statusCode, data) = await _api.Put(jsonUrl, customerJson);
 
-            return result != null;
+            return data != null;
         }
     }
 }

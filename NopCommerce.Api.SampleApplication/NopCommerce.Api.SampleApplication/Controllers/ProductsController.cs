@@ -4,7 +4,6 @@ using System.Dynamic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
-using HtmlAgilityPack;
 using Newtonsoft.Json;
 using NopCommerce.Api.AdapterLibrary;
 using NopCommerce.Api.Connector.DTOs;

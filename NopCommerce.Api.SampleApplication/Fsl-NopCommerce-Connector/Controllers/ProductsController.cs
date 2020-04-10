@@ -21,7 +21,7 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
         {
             var all = await _products.GetAll();
 
-            await _products.SyncProducts();
+            await _products.SyncProducts(all);
 
 
             return Ok(all);

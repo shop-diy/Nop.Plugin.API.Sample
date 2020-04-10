@@ -13,29 +13,25 @@ namespace Fsl.NopCommerce.Api.Connector
 {
     public class AcumaticaApiService : IDisposable
     {
+        private const string DefaultAcumaticaBaseUrl = @"http://192.168.1.11/ERP/";
+        private const string DefaultEndpoint = @"Default/17.200.001";
+        private const string DefaultUsername = @"FSLDEVELOPER";
+        private const string DefaultPassword = @"pb[N7(kA";
+        private const string DefaultCompany = @"FSLTEST";
+        private const string DefaultBranch = null;
+
         private readonly HttpClient _httpClient;
         private readonly string _acumaticaBaseUrl;
         private readonly string _acumaticaEndpointUrl;
 
-        public AcumaticaApiService(string acumaticaBaseUrl, string endpoint,
-            string userName, string password,
-            string company, string branch)
+        public AcumaticaApiService(HttpClient httpClient)
         {
-            _acumaticaBaseUrl = acumaticaBaseUrl;
-            _acumaticaEndpointUrl = _acumaticaBaseUrl + "/entity/" + endpoint + "/";
-            _httpClient = new HttpClient(
-                new HttpClientHandler
-                {
-                    UseCookies = true,
-                    CookieContainer = new CookieContainer()
-                })
-            {
-                BaseAddress = new Uri(_acumaticaEndpointUrl),
-                DefaultRequestHeaders =
-            {
-                Accept = {MediaTypeWithQualityHeaderValue.Parse("text/json")}
-            }
-            };
+            _acumaticaBaseUrl = DefaultAcumaticaBaseUrl;
+            _acumaticaEndpointUrl = _acumaticaBaseUrl + "/entity/" + DefaultEndpoint + "/";
+
+            httpClient.BaseAddress = new Uri(_acumaticaEndpointUrl);
+
+            _httpClient = httpClient;
 
             //var str = new StringContent(
             //    new JavaScriptSerializer()
@@ -51,15 +47,15 @@ namespace Fsl.NopCommerce.Api.Connector
 
             var str = JsonConvert.SerializeObject(new
             {
-                name = userName,
-                password = password,
-                company = company,
-                branch = branch
+                name = DefaultUsername,
+                password = DefaultPassword,
+                company = DefaultCompany,
+                branch = DefaultBranch
             });
 
-            var content = new StringContent(str, Encoding.UTF8, "application/json");
+            using var content = new StringContent(str, Encoding.UTF8, "application/json");
 
-            _httpClient.PostAsync(acumaticaBaseUrl + "/entity/auth/login", content)
+            _httpClient.PostAsync(_acumaticaBaseUrl + "/entity/auth/login", content)
                 .Result.EnsureSuccessStatusCode();
         }
 

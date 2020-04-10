@@ -4,6 +4,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Fsl.NopCommerce.Api.Connector.Repositories
@@ -11,10 +13,12 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
     public sealed class ProductRepository
     {
         private readonly NopCommerceApiService _api;
+        private readonly AcumaticaApiService _acumatica;
 
-        public ProductRepository(NopCommerceApiService api)
+        public ProductRepository(NopCommerceApiService api, AcumaticaApiService acumatica)
         {
             _api = api ?? throw new ArgumentNullException(nameof(api));
+            _acumatica = acumatica ?? throw new ArgumentNullException(nameof(acumatica));
         }
 
         public async Task Create(ProductApi entity)
@@ -34,9 +38,9 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
         public async Task<ProductsRootObject> GetAll()
         {
             var jsonUrl = $"/api/products?fields=name,id,sku";
-            object productsData = await _api.Get(jsonUrl);
-            var productsRootObject = JsonConvert.DeserializeObject<ProductsRootObject>(productsData.ToString());
-            return productsRootObject;
+            var (statusCode, data) = await _api.Get<ProductsRootObject>(jsonUrl);
+
+            return data;
         }
 
         public Task<ProductApi> GetById(int id)
@@ -54,18 +58,14 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
             await _api.Put(jsonUrl, productJson);
         }
 
-        public async Task SyncProducts()
+        public async Task SyncProducts(ProductsRootObject productsRootObject = null)
         {
             //Get currently listed Nop products
-            var productsRootObject = await GetAll();
+            productsRootObject = productsRootObject ?? await GetAll();
             var products = productsRootObject.Products.Where(product => !string.IsNullOrEmpty(product.Name));
 
             // Get all Acumatica products
-            string stockItems = null;
-            using (AcumaticaApiService service = new AcumaticaApiService(@"http://192.168.1.11/ERP/", @"Default/17.200.001", @"FSLDEVELOPER", @"pb[N7(kA", @"FSLTEST", null))
-            {
-                stockItems = service.GetList("StockItem");
-            }
+            string stockItems = _acumatica.GetList("StockItem");
 
             dynamic response = JsonConvert.DeserializeObject(stockItems);
 
@@ -126,7 +126,25 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
 
                     string productJson = JsonConvert.SerializeObject(productStructure);
 
-                    await _api.Post($"/api/products", productJson);
+                    try
+                    {
+                        await _api.Post($"/api/products", productJson);
+                    }
+                    catch (HttpRequestException exHttpRequest)
+                    {
+                        Console.WriteLine($"HTTP REQUEST EXCEPTION: {exHttpRequest.Message}");
+                    }
+                    catch (WebException webEx)
+                    {
+                        Console.WriteLine($"ERROR: {webEx.Message}");
+                        var exResponse = (HttpWebResponse)webEx.Response;
+                        Console.WriteLine($"STATUS: {exResponse.StatusCode}");
+                    }
+                    catch (Exception ex)
+                    {
+                        var exType = ex.GetType();
+                        Console.WriteLine($"{exType.Name}: {ex.Message}");
+                    }
                 }
             }
         }

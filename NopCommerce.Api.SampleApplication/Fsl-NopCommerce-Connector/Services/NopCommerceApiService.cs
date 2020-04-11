@@ -270,24 +270,13 @@ namespace Fsl.NopCommerce.Api.Connector.Services
 
             if (content != null)
             {
-                var ms = new MemoryStream();
-                SerializeJsonIntoStream(content, ms);
-                ms.Seek(0, SeekOrigin.Begin);
-                httpContent = new StreamContent(ms);
+                string json = JsonConvert.SerializeObject(content);
+                httpContent = new StringContent(json, Encoding.UTF8, JsonContentType);
                 httpContent.Headers.ContentType = new MediaTypeHeaderValue(JsonContentType);
             }
 
             return httpContent;
         }
 
-        private static void SerializeJsonIntoStream(object value, Stream stream)
-        {
-            using var streamWriter = new StreamWriter(stream, new UTF8Encoding(false), 1024, true);
-            using var jsonWriter = new JsonTextWriter(streamWriter) { Formatting = Formatting.None };
-            var serializer = new JsonSerializer();
-
-            serializer.Serialize(jsonWriter, value);
-            jsonWriter.Flush();
-        }
     }
 }

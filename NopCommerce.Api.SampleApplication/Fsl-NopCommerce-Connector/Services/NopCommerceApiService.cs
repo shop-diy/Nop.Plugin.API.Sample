@@ -51,7 +51,7 @@ namespace Fsl.NopCommerce.Api.Connector.Services
         {
             using var httpResponse = await GetResponse(method, path, callParams);
 
-            //httpResponse.EnsureSuccessStatusCode();
+            httpResponse.EnsureSuccessStatusCode();
 
             var data = await httpResponse.Content.ReadAsStringAsync();
 

@@ -14,7 +14,7 @@ namespace Fsl.NopCommerce.Api.Connector
     public class AcumaticaApiService : IDisposable
     {
         private const string DefaultAcumaticaBaseUrl = @"http://192.168.1.11/ERP/";
-        private const string DefaultEndpoint = @"Default/17.200.001";
+        private const string DefaultEndpoint = @"Custom/17.200.001.1";
         private const string DefaultUsername = @"FSLDEVELOPER";
         private const string DefaultPassword = @"pb[N7(kA";
         private const string DefaultCompany = @"FSLTEST";

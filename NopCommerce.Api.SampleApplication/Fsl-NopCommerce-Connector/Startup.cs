@@ -1,5 +1,6 @@
 using Fsl.NopCommerce.Api.Connector.Repositories;
 using Fsl.NopCommerce.Api.Connector.Services;
+using Fsl.NopCommerce.Api.Connector.Services.HubSpot;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -48,6 +49,15 @@ namespace Fsl.NopCommerce.Api.Connector
                 {
                     UseCookies = true,
                     CookieContainer = new CookieContainer()
+                });
+            services.AddHttpClient<HubSpotService>()
+                .ConfigureHttpClient((sp, httpClient) =>
+                {
+                    // We can use sp here to get configuration via DI
+                    // and configure httpClient
+                    httpClient.DefaultRequestHeaders.Remove("Accept");
+                    httpClient.DefaultRequestHeaders.Add("Accept", JsonContentType);
+                    httpClient.DefaultRequestHeaders.Add("User-Agent", GetType().Assembly.GetName().Name);
                 });
             services.AddScoped<CustomerRepository, CustomerRepository>();
             services.AddScoped<ProductRepository, ProductRepository>();

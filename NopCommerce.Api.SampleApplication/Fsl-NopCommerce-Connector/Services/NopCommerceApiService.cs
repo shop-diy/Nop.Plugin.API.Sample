@@ -20,8 +20,8 @@ namespace Fsl.NopCommerce.Api.Connector.Services
     {
         private const string ClientId = "8c105a5c-6597-4991-b1c9-f249087659eb";
         private const string ClientSecret = "0677922b-ec11-49f0-b280-06af667f7994";
-        private const string ServerUrl = "https://fslportal.azurewebsites.net";
-        //private const string ServerUrl = "http://localhost:15536/";
+        //private const string ServerUrl = "https://fslportal.azurewebsites.net";
+        private const string ServerUrl = "http://localhost:15536";
         private const string JsonContentType = "application/json";
 
         private readonly HttpClient _httpClient;
@@ -148,7 +148,7 @@ namespace Fsl.NopCommerce.Api.Connector.Services
 
         private Task<HttpResponseMessage> GetResponse(HttpMethod method, string path, object callParams)
         {
-            string requestUriString = $"{ServerUrl}/{path}";
+            string requestUriString = $"{ServerUrl}{path}";
 
             if (callParams != null && (method == HttpMethod.Get || method == HttpMethod.Delete))
             {

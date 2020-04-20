@@ -28,6 +28,8 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
                 { nameof(AllOwnerIds), "hs_all_owner_ids" },
                 { nameof(AllTeamIds), "hs_all_team_ids" },
                 { nameof(AllAccessibleTeamIds), "hs_all_accessible_team_ids" },
+                { nameof(AvatarKey), "hs_avatar_filemanager_key" },
+                { nameof(IsArchived), "archived" },
             };
 
             /// <summary>
@@ -129,6 +131,13 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
             /// The number of deals associated with this quote.
             /// </summary>
             public static string AssociatedDealCount => _propertyKeyMap[nameof(AssociatedDealCount)];
+
+            /// <summary>
+            /// The path in the FileManager CDN for this object's avatar override image.
+            /// </summary>
+            public static string AvatarKey => _propertyKeyMap[nameof(AvatarKey)];
+
+            public static string IsArchived => _propertyKeyMap[nameof(IsArchived)];
         }
     }
 }

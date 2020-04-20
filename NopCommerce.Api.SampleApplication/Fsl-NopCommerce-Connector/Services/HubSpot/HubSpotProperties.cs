@@ -60,7 +60,7 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            return _dynamicProperties.Keys;
+            return _dynamicProperties.Keys.ToArray();
         }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
@@ -86,7 +86,7 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
 
         public string ToParameterString(params string[] properties)
         {
-            return string.Join(',', _dynamicProperties.Keys);
+            return string.Join(',', properties != null && properties.Length > 0 ? properties : _dynamicProperties.Keys);
         }
 
         public void Add(string key, string value) =>

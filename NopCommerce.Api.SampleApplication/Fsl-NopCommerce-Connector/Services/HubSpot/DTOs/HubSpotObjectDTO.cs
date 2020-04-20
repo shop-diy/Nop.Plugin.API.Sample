@@ -7,11 +7,11 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot.DTOs
     {
         public string Id { get; set; }
 
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
 
-        public DateTimeOffset ArchivedAt { get; set; }
+        public DateTime ArchivedAt { get; set; }
 
         public bool Archived { get; set; }
 

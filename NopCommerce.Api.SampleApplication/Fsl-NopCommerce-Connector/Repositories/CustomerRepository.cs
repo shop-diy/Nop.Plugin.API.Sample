@@ -15,12 +15,12 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
             _api = api ?? throw new ArgumentNullException(nameof(api));
         }
 
-        public Task<int> Create(CustomerApi entity)
+        public Task<int> Create(CustomerApi _entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task Delete(int id)
+        public Task Delete(int _id)
         {
             throw new NotImplementedException();
         }
@@ -28,13 +28,17 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
         public async Task<CustomersRootObject> GetAll()
         {
             string jsonUrl = $"/api/customers?fields=id,first_name,last_name";
-            var (statuCode, data) = await _api.Get<CustomersRootObject>(jsonUrl);
+            var (statusCode, data) = await _api.Get<CustomersRootObject>(jsonUrl);
 
+            if ((int)statusCode < 299 && (int)statusCode > 199)
+            {
+                return data;
+            }
 
-            return data;
+            return null;
         }
 
-        public Task<CustomerApi> GetById(int id)
+        public Task<CustomerApi> GetById(int _id)
         {
             throw new NotImplementedException();
         }
@@ -52,7 +56,12 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
 
             var (statusCode, data) = await _api.Put(jsonUrl, customerJson);
 
-            return data != null;
+            if ((int)statusCode < 299 && (int)statusCode > 199)
+            {
+                return data != null;
+            }
+
+            return false;
         }
     }
 }

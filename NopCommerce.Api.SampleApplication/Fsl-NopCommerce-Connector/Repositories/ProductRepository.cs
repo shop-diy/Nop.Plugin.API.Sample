@@ -21,47 +21,52 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
             _acumatica = acumatica ?? throw new ArgumentNullException(nameof(acumatica));
         }
 
-        public async Task Create(ProductApi entity)
+        public Task Create(ProductApi _entity)
         {
             throw new NotImplementedException();
 
-            var product = new { product = new { name = "test product" } };
-            string productJson = JsonConvert.SerializeObject(product);
-            await _api.Post($"/api/products", productJson);
+            //var product = new { product = new { name = "test product" } };
+            //string productJson = JsonConvert.SerializeObject(product);
+            //await _api.Post($"api/products", productJson);
         }
 
         public async Task Delete(int id)
         {
-            await _api.Delete($"/api/products/{id}");
+            await _api.Delete($"api/products/{id}");
         }
 
         public async Task<ProductsRootObject> GetAll()
         {
-            var jsonUrl = $"/api/products?fields=name,id,sku";
+            var jsonUrl = $"api/products?fields=name,id,sku";
             var (statusCode, data) = await _api.Get<ProductsRootObject>(jsonUrl);
 
-            return data;
+            if ((int)statusCode < 299 && (int)statusCode > 199)
+            {
+                return data;
+            }
+
+            return null;
         }
 
-        public Task<ProductApi> GetById(int id)
+        public Task<ProductApi> GetById(int _id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task Update(int id, ProductApi updated)
+        public Task Update(int _id, ProductApi _updated)
         {
             throw new NotImplementedException();
 
-            var productToUpdate = new { product = new { name = "product name", price = "1.00" } };
-            string productJson = JsonConvert.SerializeObject(productToUpdate);
-            string jsonUrl = $"/api/products/{id}";
-            await _api.Put(jsonUrl, productJson);
+            //var productToUpdate = new { product = new { name = "product name", price = "1.00" } };
+            //string productJson = JsonConvert.SerializeObject(productToUpdate);
+            //string jsonUrl = $"api/products/{id}";
+            //await _api.Put(jsonUrl, productJson);
         }
 
         public async Task SyncProducts(ProductsRootObject productsRootObject = null)
         {
             //Get currently listed Nop products
-            productsRootObject = productsRootObject ?? await GetAll();
+            productsRootObject ??= await GetAll();
             var products = productsRootObject.Products.Where(product => !string.IsNullOrEmpty(product.Name));
 
             // Get all Acumatica products
@@ -128,7 +133,7 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
 
                     try
                     {
-                        var response2 = await _api.Post($"/api/products", productStructure);
+                        var (statusCode, data) = await _api.Post($"api/products", productStructure);
                     }
                     catch (HttpRequestException exHttpRequest)
                     {

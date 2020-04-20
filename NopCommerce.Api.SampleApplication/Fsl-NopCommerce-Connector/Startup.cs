@@ -1,6 +1,10 @@
+using Fsl.NopCommerce.Api.Connector.Mapping;
 using Fsl.NopCommerce.Api.Connector.Repositories;
 using Fsl.NopCommerce.Api.Connector.Services;
+using Fsl.NopCommerce.Api.Connector.Services.Acumatica;
+using Fsl.NopCommerce.Api.Connector.Services.Acumatica.DTOs;
 using Fsl.NopCommerce.Api.Connector.Services.HubSpot;
+using Fsl.NopCommerce.Api.Connector.Services.HubSpot.DTOs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -61,6 +65,10 @@ namespace Fsl.NopCommerce.Api.Connector
                 });
             services.AddScoped<CustomerRepository, CustomerRepository>();
             services.AddScoped<ProductRepository, ProductRepository>();
+            services.AddTransient <IObjectMapper, HubSpotQuoteToAcumeticaSalesOrderMapper>();
+            services.AddTransient<HubSpotRepository, HubSpotRepository>();
+            services.AddTransient<AcumaticaRepository, AcumaticaRepository>();
+
             services.AddControllers();
         }
 

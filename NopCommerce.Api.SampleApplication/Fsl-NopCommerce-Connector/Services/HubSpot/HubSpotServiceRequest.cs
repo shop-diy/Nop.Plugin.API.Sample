@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
@@ -10,6 +11,7 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
         public dynamic Properties { get; set; }
         public IEnumerable<string> Associations { get; set; }
         public bool Archived { get; set; }
+        public IEnumerable<object> Inputs { get; set; }
 
         public static HubSpotServiceRequest ForQuote()
         {
@@ -43,6 +45,13 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
         public HubSpotServiceRequest WithAssociations(params string[] associations)
         {
             Associations = associations;
+
+            return this;
+        }
+
+        public HubSpotServiceRequest WithInputs(object[] inputs)
+        {
+            Inputs = inputs;
 
             return this;
         }

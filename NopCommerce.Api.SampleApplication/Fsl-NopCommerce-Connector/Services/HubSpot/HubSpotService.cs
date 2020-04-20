@@ -54,10 +54,41 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
 
             var httpRequest = new HttpRequestMessage(method, uri.Uri);
 
-            if (request.Properties != null && (method == HttpMethod.Post || method == HttpMethod.Put))
+            if (method == HttpMethod.Post || method == HttpMethod.Put)
             {
-                var json = request.Properties.ToJsonString();
-                httpRequest.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                string json = null;
+                if (request.Properties != null)
+                {
+                    if (request.Inputs != null)
+                    {
+                        string[] properties = request.Properties.GetDynamicMemberNames();
+                        json = JsonConvert.SerializeObject(new
+                        {
+                            properties,
+                            inputs = request.Inputs
+                        });
+                    }
+                    else
+                    {
+                        json = JsonConvert.SerializeObject(new
+                        {
+                            properties = request.Properties.GetDynamicMemberNames().ToArray(),
+                            inputs = request.Inputs
+                        });
+                    }
+                }
+                else if (request.Inputs != null)
+                {
+                    json = JsonConvert.SerializeObject(new
+                    {
+                        inputs = request.Inputs
+                    });
+                }
+
+                if (!string.IsNullOrEmpty(json))
+                {
+                    httpRequest.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                }
             }
 
             var httpResponse = await _httpClient.SendAsync(httpRequest);

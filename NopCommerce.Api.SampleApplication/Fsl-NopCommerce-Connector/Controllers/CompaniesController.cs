@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Fsl.NopCommerce.Api.Connector.Mapping;
+using Fsl.NopCommerce.Api.Connector.Services.Acumatica.DTOs;
 using Fsl.NopCommerce.Api.Connector.Services.HubSpot;
 using Fsl.NopCommerce.Api.Connector.Services.HubSpot.DTOs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace Fsl.NopCommerce.Api.Connector.Controllers
 {
@@ -49,14 +48,14 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
                 "quotes"
             );
 
-            var (Status, Data) = await _service.Get<HubSpotObjectListDTO>(request);
+            var (statusCode, data) = await _service.Get<HubSpotObjectListDTO>(request);
 
-            if (Status == System.Net.HttpStatusCode.OK)
+            if ((int)statusCode < 299 && (int)statusCode > 199)
             {
-                return Ok(Data);
+                return Ok(data);
             }
 
-            return StatusCode((int)Status);
+            return StatusCode((int)statusCode);
         }
 
         [HttpGet("{id}")]
@@ -89,14 +88,14 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
                 "quotes"
             );
 
-            var (Status, Data) = await _service.Get<HubSpotObjectDTO>(request);
+            var (statusCode, data) = await _service.Get<HubSpotObjectDTO>(request);
 
-            if (Status == System.Net.HttpStatusCode.OK)
+            if ((int)statusCode < 299 && (int)statusCode > 199)
             {
-                return Ok(Data);
+                return Ok(data);
             }
 
-            return StatusCode((int)Status);
+            return StatusCode((int)statusCode);
         }
     }
 }

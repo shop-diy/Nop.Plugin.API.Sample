@@ -27,9 +27,11 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var customer = await _customers.GetById(id);
+
+            return Ok(customer);
         }
 
         // POST api/<controller>
@@ -49,7 +51,7 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(int _id)
         {
         }
     }

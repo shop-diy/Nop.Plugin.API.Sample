@@ -29,32 +29,28 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public string Get(int _id)
         {
             throw new NotImplementedException();
         }
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromBody]string _value)
         {
             throw new NotImplementedException();
         }
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromRoute]int id, [FromQuery]string name)
+        public Task<IActionResult> Put([FromRoute]int _id, [FromQuery]string _name)
         {
             throw new NotImplementedException();
-
-            await _products.Update(id, new ProductApi { Name = name });
-
-            return Ok();
         }
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(int _id)
         {
             throw new NotImplementedException();
         }

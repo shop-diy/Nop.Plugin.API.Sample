@@ -16,7 +16,6 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
                 { nameof(FirstDealCreateDate), "first_deal_created_date" },
                 { nameof(YearFounded), "founded_year" },
                 { nameof(AdditionalDomains), "hs_additional_domains" },
-                { nameof(AvatarKey), "hs_avatar_filemanager_key" },
                 { nameof(IdealCustomerProfileTier), "hs_ideal_customer_profile" },
                 { nameof(IsTargetAccount), "hs_is_target_account" },
                 { nameof(LastBookedMeetingDate), "hs_last_booked_meeting_date" },
@@ -78,7 +77,26 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
                 { nameof(FirstContactCreateDate), "first_contact_createdate" },
                 { nameof(DaysToClose), "days_to_close" },
                 { nameof(WebTechnologies), "web_technologies" },
+                { nameof(BillingAddress1), "billing_address_line_1" },
+                //{ nameof(BillingAddress2), "billing_address_line_2" },
+                { nameof(BillingCity), "billing_city" },
+                { nameof(BillingState), "billing_state" },
+                { nameof(BillingZip), "billing_postal_code" },
+                { nameof(BillingCountry), "billing_country" },
             };
+
+            public static string BillingAddress1 => _propertyKeyMap[nameof(BillingAddress1)];
+
+            //public static string BillingAddress2 => _propertyKeyMap[nameof(BillingAddress2)];
+
+            public static string BillingCity => _propertyKeyMap[nameof(BillingCity)];
+
+            public static string BillingState => _propertyKeyMap[nameof(BillingState)];
+
+            public static string BillingZip => _propertyKeyMap[nameof(BillingZip)];
+
+            public static string BillingCountry => _propertyKeyMap[nameof(BillingCountry)];
+
 
             /// <summary>
             /// The ID of the user that can approve this quote.
@@ -119,11 +137,6 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
             /// Additional domains belonging to this company.
             /// </summary>
             public static string AdditionalDomains => _propertyKeyMap[nameof(AdditionalDomains)];
-
-            /// <summary>
-            /// The path in the FileManager CDN for this company's avatar override image.
-            /// </summary>
-            public static string AvatarKey => _propertyKeyMap[nameof(AvatarKey)];
 
             /// <summary>
             /// This property shows how well a Company matches your Ideal Customer Profile.
@@ -281,7 +294,7 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
             public static string LinkedInBio => _propertyKeyMap[nameof(LinkedInBio)];
 
             /// <summary>
-            /// "HubSpot owner name for this company or organization.
+            /// HubSpot owner name for this company or organization.
             /// </summary>
             public static string OwnerName => _propertyKeyMap[nameof(OwnerName)];
 

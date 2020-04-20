@@ -148,7 +148,7 @@ namespace Fsl.NopCommerce.Api.Connector.Services
 
         private Task<HttpResponseMessage> GetResponse(HttpMethod method, string path, object callParams)
         {
-            string requestUriString = $"{ServerUrl}{path}";
+            string requestUriString = $"{ServerUrl}/{path}";
 
             if (callParams != null && (method == HttpMethod.Get || method == HttpMethod.Delete))
             {

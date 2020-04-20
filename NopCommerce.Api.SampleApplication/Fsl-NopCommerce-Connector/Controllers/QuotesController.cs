@@ -1,4 +1,5 @@
 ﻿using Fsl.NopCommerce.Api.Connector.Extensions;
+using Fsl.NopCommerce.Api.Connector.Services;
 using Fsl.NopCommerce.Api.Connector.Services.Acumatica;
 using Fsl.NopCommerce.Api.Connector.Services.HubSpot;
 using Fsl.NopCommerce.Api.Connector.Services.HubSpot.DTOs;
@@ -188,8 +189,39 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
                         LastName = new StringValue(companyMainContact.LastName),
                         Phone1 = new StringValue(companyMainContact.PhoneNumber),
                         Phone2 = new StringValue(company.Phone),
-                        Attention = new StringValue(companyMainContact.GetAttention())
+                        Attention = new StringValue(companyMainContact.GetAttention()),
+                        //Address = new Address
+                        //{
+                        //    AddressLine1 = new StringValue(company.BillingAddress1),
+                        //    AddressLine2 = new StringValue(company.BillingAddress2),
+                        //    City = new StringValue(company.BillingCity),
+                        //    State = new StringValue(company.BillingCountry),
+                        //    PostalCode = new StringValue(company.BillingZip),
+                        //    Country = new StringValue(company.BillingCountry),
+                        //},
                     },
+                    //BillingAddressSameAsMain = new BooleanValue(true),
+                    //ShippingContact = new Contact
+                    //{
+                    //    CompanyName = new StringValue(company.Name),
+                    //    Active = new BooleanValue(true),
+                    //    Email = new StringValue(companyMainContact.Email),
+                    //    Source = new StringValue("HubSpot Sync"),
+                    //    FirstName = new StringValue(companyMainContact.FirstName),
+                    //    LastName = new StringValue(companyMainContact.LastName),
+                    //    Phone1 = new StringValue(companyMainContact.PhoneNumber),
+                    //    Phone2 = new StringValue(company.Phone),
+                    //    Attention = new StringValue(companyMainContact.GetAttention()),
+                    //    Address = new Address
+                    //    {
+                    //        AddressLine1 = new StringValue(company.Address1),
+                    //        AddressLine2 = new StringValue(company.Address2),
+                    //        City = new StringValue(company.City),
+                    //        State = new StringValue(company.State),
+                    //        PostalCode = new StringValue(company.Zip),
+                    //        Country = new StringValue(company.Country),
+                    //    }
+                    //}
                 };
 
                 // Add a new customer based on information from the HubSpot company.
@@ -224,7 +256,10 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
             //    return detail;
             //}
 
-        var salesOrderToAdd = new SalesOrder
+            var billingCountry = CountryCodes.ToAlpha2(company.BillingCountry) ?? CountryCodes.DefaultAlpha2;
+            var shippingCountry = CountryCodes.ToAlpha2(company.Country) ?? CountryCodes.DefaultAlpha2;
+
+            var salesOrderToAdd = new SalesOrder
             {
                 CustomerID = acumaticaCustomer.CustomerID,
                 BillToAddress = new Address
@@ -232,10 +267,11 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
                     AddressLine1 = new StringValue(company.BillingAddress1),
                     AddressLine2 = new StringValue(company.BillingAddress2),
                     City = new StringValue(company.BillingCity),
-                    State = new StringValue(company.BillingCountry),
+                    State = new StringValue(company.BillingState),
                     PostalCode = new StringValue(company.BillingZip),
-                    Country = new StringValue(company.BillingCountry),
+                    Country = new StringValue(billingCountry),
                 },
+                BillToAddressOverride = new BooleanValue(true),
                 ShipToAddress = new Address
                 {
                     AddressLine1 = new StringValue(company.Address1),
@@ -243,8 +279,9 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
                     City = new StringValue(company.City),
                     State = new StringValue(company.State),
                     PostalCode = new StringValue(company.Zip),
-                    Country = new StringValue(company.Country),
+                    Country = new StringValue(shippingCountry),
                 },
+                ShipToAddressOverride = new BooleanValue(true),
                 Date = new DateTimeValue(hubSpotQuote.CreatedDate),
                 OrderType = new StringValue("QT"),
                 Description = new StringValue(hubSpotQuote.Name),

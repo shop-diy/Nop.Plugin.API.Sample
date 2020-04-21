@@ -1,5 +1,5 @@
-﻿using Fsl.NopCommerce.Api.Connector.Services.HubSpot.DTOs;
-using Fsl.NopCommerce.Api.Connector.Services.HubSpot.Model;
+﻿using Fsl.NopCommerce.Api.Connector.DTOs.HubSpot;
+using Fsl.NopCommerce.Api.Connector.Model.HubSpot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +7,18 @@ using System.Threading.Tasks;
 
 namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
 {
-    public class HubSpotLineItemRepository
+    public class HubSpotLineItemRepository : IHubSpotReadOnlyRepository<HubSpotLineItem>
     {
-        private readonly HubSpotService _service;
+        private readonly IHubSpotService _service;
 
-        public HubSpotLineItemRepository(HubSpotService hubSpotService)
+        public HubSpotLineItemRepository(IHubSpotService hubSpotService)
         {
             _service = hubSpotService ?? throw new ArgumentNullException(nameof(hubSpotService));
+        }
+
+        public Task<IEnumerable<HubSpotLineItem>> GetAll(EntityOptions options = null)
+        {
+            throw new NotImplementedException("Cannot get all line items.");
         }
 
         public async Task<IEnumerable<HubSpotLineItem>> GetBatch (params string[] ids)
@@ -43,31 +48,19 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
             )
             .WithInputs(ids.Select(id => new { id }).ToArray());
 
-            var (statusCode, data) = await _service.Post<HubSpotObjectListDTO>(request);
+            var response = await _service.Post<HubSpotObjectListDTO>(request);
 
-            if (statusCode != System.Net.HttpStatusCode.OK)
+            if (response.Status != System.Net.HttpStatusCode.OK)
             {
-                throw new System.Net.Http.HttpRequestException($"Request responded with HTTP status {statusCode}.");
+                throw new System.Net.Http.HttpRequestException($"Request responded with HTTP status {response.Status}.");
             }
 
-            return data.Results.Select(dto => FromDto(dto, excludeQuotes: true, excludeCompanies: true, excludeContacts: true, excludeDeals: true));
+            return response.Data.Results.Select(dto => FromDto(dto, new EntityOptions { ExcludedAssociations = "Quotes,Companies,Contacts,Deals" }));
         }
 
-        public async Task<HubSpotLineItem> GetById (string id, bool excludeQuotes = false, bool excludeCompanies = false, bool excludeContacts = false, bool excludeDeals = false)
+        public async Task<HubSpotLineItem> GetById (string id, EntityOptions options = null)
         {
-            var associations = new List<string>();
-
-            if (!excludeQuotes)
-                associations.Add("quotes");
-
-            if (!excludeCompanies)
-                associations.Add("companies");
-
-            if (!excludeContacts)
-                associations.Add("contacts");
-
-            if (!excludeDeals)
-                associations.Add("deals");
+            options ??= new EntityOptions();
 
             var request = new HubSpotServiceRequest
             {
@@ -92,19 +85,19 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
                 HubSpotProperties.LineItem.Currency,
                 HubSpotProperties.LineItem.PositionOnQuote
             )
-            .WithAssociations(associations.ToArray());
+            .WithAssociations(options.ToAssociationsArray<HubSpotContact>());
 
-            var (statusCode, data) = await _service.Get<HubSpotObjectDTO>(request);
+            var response = await _service.Get<HubSpotObjectDTO>(request);
 
-            if (statusCode != System.Net.HttpStatusCode.OK)
+            if (response.Status != System.Net.HttpStatusCode.OK)
             {
-                throw new System.Net.Http.HttpRequestException($"Request responded with HTTP status {statusCode}.");
+                throw new System.Net.Http.HttpRequestException($"Request responded with HTTP status {response.Status}.");
             }
 
-            return FromDto(data, excludeQuotes, excludeCompanies, excludeContacts, excludeDeals);
+            return FromDto(response.Data, options);
         }
 
-        private HubSpotLineItem FromDto(HubSpotObjectDTO dto, bool excludeQuotes, bool excludeCompanies, bool excludeContacts, bool excludeDeals)
+        private HubSpotLineItem FromDto(HubSpotObjectDTO dto, EntityOptions options)
         {
             int? positionOnQuote = null;
             if (int.TryParse(dto.Properties[HubSpotProperties.LineItem.PositionOnQuote], out int poq))
@@ -166,27 +159,8 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
                 DiscountPercentage = discountPercentage,
                 Currency = dto.Properties[HubSpotProperties.LineItem.Currency],
                 PositionOnQuote = positionOnQuote,
-            };
-
-            if (!excludeQuotes && dto.Associations?.Quotes?.Results != null)
-            {
-                result.AssociatedQuoteIds = dto.Associations.Quotes.Results.Select(link => link.Id);
             }
-
-            if (!excludeCompanies && dto.Associations?.Companies?.Results != null)
-            {
-                result.AssociatedCompanyIds = dto.Associations.Companies.Results.Select(link => link.Id);
-            }
-
-            if (!excludeContacts && dto.Associations?.Contacts?.Results != null)
-            {
-                result.AssociatedContactIds = dto.Associations.Contacts.Results.Select(link => link.Id);
-            }
-
-            if (!excludeDeals && dto.Associations?.Deals?.Results != null)
-            {
-                result.AssociatedDealIds = dto.Associations.Deals.Results.Select(link => link.Id);
-            }
+            .AddAssociatedIds(dto, options);
 
             return result;
         }

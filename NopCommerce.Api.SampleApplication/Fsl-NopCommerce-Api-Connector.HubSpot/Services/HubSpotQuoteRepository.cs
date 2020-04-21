@@ -1,5 +1,5 @@
-﻿using Fsl.NopCommerce.Api.Connector.Services.HubSpot.DTOs;
-using Fsl.NopCommerce.Api.Connector.Services.HubSpot.Model;
+﻿using Fsl.NopCommerce.Api.Connector.DTOs.HubSpot;
+using Fsl.NopCommerce.Api.Connector.Model.HubSpot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,30 +7,18 @@ using System.Threading.Tasks;
 
 namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
 {
-    public class HubSpotQuoteRepository
+    public class HubSpotQuoteRepository : IHubSpotReadOnlyRepository<HubSpotQuote>
     {
-        private readonly HubSpotService _service;
+        private readonly IHubSpotService _service;
 
-        public HubSpotQuoteRepository(HubSpotService hubSpotService)
+        public HubSpotQuoteRepository(IHubSpotService hubSpotService)
         {
             _service = hubSpotService ?? throw new ArgumentNullException(nameof(hubSpotService));
         }
 
-        public async Task<IEnumerable<HubSpotQuote>> GetAll(bool excludeLineItems = false, bool excludeCompanies = false, bool excludeContacts = false, bool excludeDeals = false)
+        public async Task<IEnumerable<HubSpotQuote>> GetAll(EntityOptions options = null)
         {
-            var associations = new List<string>();
-
-            if (!excludeLineItems)
-                associations.Add("line_items");
-
-            if (!excludeCompanies)
-                associations.Add("companies");
-
-            if (!excludeContacts)
-                associations.Add("contacts");
-
-            if (!excludeDeals)
-                associations.Add("deals");
+            options ??= new EntityOptions();
 
             var request = new HubSpotServiceRequest
             {
@@ -50,33 +38,53 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
                 HubSpotProperties.Quote.DiscountDisplayStyle,
                 HubSpotProperties.Quote.Terms
             )
-            .WithAssociations(associations.ToArray());
+            .WithAssociations(options.ToAssociationsArray<HubSpotQuote>());
 
-            var (statusCode, data) = await _service.Get<HubSpotObjectListDTO>(request);
+            var response = await _service.Get<HubSpotObjectListDTO>(request);
 
-            if (statusCode != System.Net.HttpStatusCode.OK)
+            if (response.Status != System.Net.HttpStatusCode.OK)
             {
-                throw new System.Net.Http.HttpRequestException($"Request responded with HTTP status {statusCode}.");
+                throw new System.Net.Http.HttpRequestException($"Request responded with HTTP status {response.Status}.");
             }
 
-            return data.Results.Select(dto => FromDto(dto, excludeLineItems, excludeCompanies, excludeContacts, excludeDeals));
+            return response.Data.Results.Select(dto => FromDto(dto, options));
         }
 
-        public async Task<HubSpotQuote> GetById(string id, bool excludeLineItems = false, bool excludeCompanies = false, bool excludeContacts = false, bool excludeDeals = false)
+        public async Task<IEnumerable<HubSpotQuote>> GetBatch(params string[] ids)
         {
-            var associations = new List<string>();
+            var request = new HubSpotServiceRequest
+            {
+                Path = "crm/v3/objects/quotes/batch/read",
+            }
+            .IncludeProperties(
+                HubSpotProperties.Common.Id,
+                HubSpotProperties.Quote.Title,
+                HubSpotProperties.Common.CreatedDate,
+                HubSpotProperties.Common.LastModifiedDate,
+                HubSpotProperties.Common.IsArchived,
+                HubSpotProperties.Quote.QuoteNumber,
+                HubSpotProperties.Quote.ExpirationDate,
+                HubSpotProperties.Quote.Currency,
+                HubSpotProperties.Quote.Amount,
+                HubSpotProperties.Quote.ApprovalStatus,
+                HubSpotProperties.Quote.DiscountDisplayStyle,
+                HubSpotProperties.Quote.Terms
+            )
+            .WithInputs(ids.Select(id => new { id }).ToArray());
 
-            if (!excludeLineItems)
-                associations.Add("line_items");
+            var response = await _service.Post<HubSpotObjectListDTO>(request);
 
-            if (!excludeCompanies)
-                associations.Add("companies");
+            if (response.Status != System.Net.HttpStatusCode.OK)
+            {
+                throw new System.Net.Http.HttpRequestException($"Request responded with HTTP status {response.Status}.");
+            }
 
-            if (!excludeContacts)
-                associations.Add("contacts");
+            return response.Data.Results.Select(dto => FromDto(dto, new EntityOptions { ExcludedAssociations = "Companies,Contacts,LineItems,Deals" }));
+        }
 
-            if (!excludeDeals)
-                associations.Add("deals");
+        public async Task<HubSpotQuote> GetById(string id, EntityOptions options = null)
+        {
+            options ??= new EntityOptions();
 
             var request = new HubSpotServiceRequest
             {
@@ -96,19 +104,19 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
                 HubSpotProperties.Quote.DiscountDisplayStyle,
                 HubSpotProperties.Quote.Terms
             )
-            .WithAssociations(associations.ToArray());
+            .WithAssociations(options.ToAssociationsArray<HubSpotQuote>());
 
-            var (statusCode, data) = await _service.Get<HubSpotObjectDTO>(request);
+            var response = await _service.Get<HubSpotObjectDTO>(request);
 
-            if (statusCode != System.Net.HttpStatusCode.OK)
+            if (response.Status != System.Net.HttpStatusCode.OK)
             {
-                throw new System.Net.Http.HttpRequestException($"Request responded with HTTP status {statusCode}.");
+                throw new System.Net.Http.HttpRequestException($"Request responded with HTTP status {response.Status}.");
             }
 
-            return FromDto(data, excludeLineItems, excludeCompanies, excludeContacts, excludeDeals);
+            return FromDto(response.Data, options);
         }
 
-        private HubSpotQuote FromDto(HubSpotObjectDTO dto, bool excludeLineItems, bool excludeCompanies, bool excludeContacts, bool excludeDeals)
+        private HubSpotQuote FromDto(HubSpotObjectDTO dto, EntityOptions options)
         {
             DateTime? expirationDate = null;
             if (DateTime.TryParse(dto.Properties[HubSpotProperties.Quote.ExpirationDate], out DateTime expDate))
@@ -140,27 +148,8 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
                 ApprovalStatus = approvalStatus,
                 DiscountDisplayStyle = discountDisplayStyle,
                 Terms = dto.Properties[HubSpotProperties.Quote.Terms],
-            };
-
-            if (!excludeLineItems && dto.Associations?.Line_Items?.Results != null)
-            {
-                result.AssociatedLineItemIds = dto.Associations.Line_Items.Results.Select(link => link.Id);
             }
-
-            if (!excludeCompanies && dto.Associations?.Companies?.Results != null)
-            {
-                result.AssociatedCompanyIds = dto.Associations.Companies.Results.Select(link => link.Id);
-            }
-
-            if (!excludeContacts && dto.Associations?.Contacts?.Results != null)
-            {
-                result.AssociatedContactIds = dto.Associations.Contacts.Results.Select(link => link.Id);
-            }
-
-            if (!excludeDeals && dto.Associations?.Deals?.Results != null)
-            {
-                result.AssociatedDealIds = dto.Associations.Deals.Results.Select(link => link.Id);
-            }
+            .AddAssociatedIds(dto, options);
 
             return result;
         }

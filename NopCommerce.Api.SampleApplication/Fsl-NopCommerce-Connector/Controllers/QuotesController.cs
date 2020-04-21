@@ -1,9 +1,8 @@
 ﻿using Fsl.NopCommerce.Api.Connector.Extensions;
+using Fsl.NopCommerce.Api.Connector.Model.HubSpot;
 using Fsl.NopCommerce.Api.Connector.Services;
 using Fsl.NopCommerce.Api.Connector.Services.Acumatica;
 using Fsl.NopCommerce.Api.Connector.Services.HubSpot;
-using Fsl.NopCommerce.Api.Connector.Services.HubSpot.DTOs;
-using Fsl.NopCommerce.Api.Connector.Services.HubSpot.Model;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -16,15 +15,16 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
     [ApiController]
     public class QuotesController : ControllerBase
     {
-        private readonly HubSpotRepository _hubSpot;
+        private readonly HubSpotContext _hubSpot;
         private readonly AcumaticaRepository _acumatica;
 
-        public QuotesController(HubSpotRepository hubSpotRepository, AcumaticaRepository acumaticaRepository)
+        public QuotesController(HubSpotContext hubSpotContext, AcumaticaRepository acumaticaRepository)
         {
-            _hubSpot = hubSpotRepository ?? throw new ArgumentNullException(nameof(hubSpotRepository));
+            _hubSpot = hubSpotContext ?? throw new ArgumentNullException(nameof(hubSpotContext));
             _acumatica = acumaticaRepository ?? throw new ArgumentNullException(nameof(acumaticaRepository));
         }
 
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -37,37 +37,6 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
             {
                 return StatusCode(402, exHttp.Message);
             }
-
-            //var request = new HubSpotServiceRequest
-            //{
-            //    Path = "crm/v3/objects/quotes",
-            //}
-            //.IncludeProperties(
-            //    HubSpotProperties.Common.CreatedDate,
-            //    HubSpotProperties.Common.LastModifiedDate,
-            //    HubSpotProperties.Quote.ExpirationDate,
-            //    HubSpotProperties.Quote.PublicUrlKey,
-            //    HubSpotProperties.Quote.ApprovalStatus,
-            //    HubSpotProperties.Quote.Amount,
-            //    HubSpotProperties.Quote.ApproverId,
-            //    HubSpotProperties.Quote.Title,
-            //    HubSpotProperties.Common.AssociatedDealCount
-            //)
-            //.WithAssociations(
-            //    "deals",
-            //    "line_items",
-            //    "contacts",
-            //    "companies"
-            //);
-
-            //var (statusCode, data) = await _service.Get<HubSpotObjectListDTO>(request);
-
-            //if ((int)statusCode < 299 && (int)statusCode > 199)
-            //{
-            //    return Ok(data);
-            //}
-
-            //return StatusCode((int)Status);
         }
 
         [HttpGet("{id}")]
@@ -95,37 +64,6 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
             {
                 return StatusCode(402, exHttp.Message);
             }
-
-            //var request = new HubSpotServiceRequest
-            //{
-            //    Path = $"crm/v3/objects/quotes/{id}",
-            //}
-            //.IncludeProperties(
-            //    HubSpotProperties.Common.CreatedDate,
-            //    HubSpotProperties.Common.LastModifiedDate,
-            //    HubSpotProperties.Quote.ExpirationDate,
-            //    HubSpotProperties.Quote.PublicUrlKey,
-            //    HubSpotProperties.Quote.ApprovalStatus,
-            //    HubSpotProperties.Quote.Amount,
-            //    HubSpotProperties.Quote.ApproverId,
-            //    HubSpotProperties.Quote.Title,
-            //    HubSpotProperties.Common.AssociatedDealCount
-            //)
-            //.WithAssociations(
-            //    "deals",
-            //    "line_items",
-            //    "contacts",
-            //    "companies"
-            //);
-
-            //var (statusCode, data) = await _service.Get<HubSpotObjectDTO>(request);
-
-            //if ((int)statusCode < 299 && (int)statusCode > 199)
-            //{
-            //    return Ok(data);
-            //}
-
-            //return StatusCode((int)Status);
         }
 
         private async Task<SalesOrder> SyncQuoteToSalesOrder(HubSpotQuote hubSpotQuote)
@@ -189,7 +127,7 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
                         LastName = new StringValue(companyMainContact.LastName),
                         Phone1 = new StringValue(companyMainContact.PhoneNumber),
                         Phone2 = new StringValue(company.Phone),
-                        Attention = new StringValue(companyMainContact.GetAttention()),
+                        Attention = new StringValue("Michael Scott"), // companyMainContact.GetAttention()),
                         //Address = new Address
                         //{
                         //    AddressLine1 = new StringValue(company.BillingAddress1),
@@ -200,7 +138,7 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
                         //    Country = new StringValue(company.BillingCountry),
                         //},
                     },
-                    //BillingAddressSameAsMain = new BooleanValue(true),
+                    BillingAddressSameAsMain = new BooleanValue(true),
                     //ShippingContact = new Contact
                     //{
                     //    CompanyName = new StringValue(company.Name),
@@ -272,6 +210,14 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
                     Country = new StringValue(billingCountry),
                 },
                 BillToAddressOverride = new BooleanValue(true),
+                BillToContact = new DocContact
+                {
+                    Attention = new StringValue(companyMainContact.GetAttention()),
+                    BusinessName = new StringValue(company.Name),
+                    Email = new StringValue(companyMainContact.Email),
+                    Phone1 = new StringValue(companyMainContact.PhoneNumber),
+                },
+                BillToContactOverride = new BooleanValue(true),
                 ShipToAddress = new Address
                 {
                     AddressLine1 = new StringValue(company.Address1),
@@ -282,6 +228,14 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
                     Country = new StringValue(shippingCountry),
                 },
                 ShipToAddressOverride = new BooleanValue(true),
+                ShipToContact = new DocContact
+                {
+                    Attention = new StringValue(companyMainContact.GetAttention()),
+                    BusinessName = new StringValue(company.Name),
+                    Email = new StringValue(companyMainContact.Email),
+                    Phone1 = new StringValue(companyMainContact.PhoneNumber),
+                },
+                ShipToContactOverride = new BooleanValue(true),
                 Date = new DateTimeValue(hubSpotQuote.CreatedDate),
                 OrderType = new StringValue("QT"),
                 Description = new StringValue(hubSpotQuote.Name),

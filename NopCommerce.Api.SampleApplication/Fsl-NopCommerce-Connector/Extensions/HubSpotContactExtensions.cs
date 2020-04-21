@@ -1,8 +1,4 @@
-﻿using Fsl.NopCommerce.Api.Connector.Services.HubSpot.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Fsl.NopCommerce.Api.Connector.Model.HubSpot;
 
 namespace Fsl.NopCommerce.Api.Connector.Extensions
 {

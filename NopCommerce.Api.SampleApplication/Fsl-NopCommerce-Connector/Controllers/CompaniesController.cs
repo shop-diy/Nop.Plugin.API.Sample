@@ -1,9 +1,7 @@
-﻿using Fsl.NopCommerce.Api.Connector.Mapping;
-using Fsl.NopCommerce.Api.Connector.Services.Acumatica.DTOs;
-using Fsl.NopCommerce.Api.Connector.Services.HubSpot;
-using Fsl.NopCommerce.Api.Connector.Services.HubSpot.DTOs;
+﻿using Fsl.NopCommerce.Api.Connector.Services.HubSpot;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Fsl.NopCommerce.Api.Connector.Controllers
@@ -12,90 +10,40 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
     [ApiController]
     public class CompaniesController : ControllerBase
     {
-        private readonly HubSpotService _service;
+        private readonly HubSpotContext _hubSpot;
 
-        public CompaniesController(HubSpotService hubSpotService)
+        public CompaniesController(HubSpotContext hubSpotContext)
         {
-            _service = hubSpotService ?? throw new ArgumentNullException(nameof(hubSpotService));
+            _hubSpot = hubSpotContext ?? throw new ArgumentNullException(nameof(hubSpotContext));
         }
 
         public async Task<IActionResult> GetAll()
         {
-            var request = new HubSpotServiceRequest
+            try
             {
-                Path = "crm/v3/objects/companies",
+                var allCompanies = await _hubSpot.Companies.GetAll();
+
+                return Ok(allCompanies);
             }
-            .IncludeProperties(
-                HubSpotProperties.Common.CreatedDate,
-                HubSpotProperties.Common.LastModifiedDate,
-                HubSpotProperties.Company.Name,
-                HubSpotProperties.Company.Website,
-                HubSpotProperties.Company.Type,
-                HubSpotProperties.Company.Description,
-                HubSpotProperties.Company.EmployeeCount,
-                HubSpotProperties.Company.HubSpotScore,
-                HubSpotProperties.Company.Industry,
-                HubSpotProperties.Company.IsPublic,
-                HubSpotProperties.Company.LastSalesActivityDate,
-                HubSpotProperties.Company.LifecycleStage,
-                HubSpotProperties.Company.OwnerName,
-                HubSpotProperties.Company.TotalRevenue
-           )
-            .WithAssociations(
-                "deals",
-                "line_items",
-                "contacts",
-                "quotes"
-            );
-
-            var (statusCode, data) = await _service.Get<HubSpotObjectListDTO>(request);
-
-            if ((int)statusCode < 299 && (int)statusCode > 199)
+            catch (HttpRequestException exHttp)
             {
-                return Ok(data);
+                return StatusCode(402, exHttp.Message);
             }
-
-            return StatusCode((int)statusCode);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var request = new HubSpotServiceRequest
+            try
             {
-                Path = $"crm/v3/objects/companies/{id}",
+                var company = await _hubSpot.Companies.GetById(id);
+
+                return NotFound();
             }
-            .IncludeProperties(
-                HubSpotProperties.Common.CreatedDate,
-                HubSpotProperties.Common.LastModifiedDate,
-                HubSpotProperties.Company.Name,
-                HubSpotProperties.Company.Website,
-                HubSpotProperties.Company.Type,
-                HubSpotProperties.Company.Description,
-                HubSpotProperties.Company.EmployeeCount,
-                HubSpotProperties.Company.HubSpotScore,
-                HubSpotProperties.Company.Industry,
-                HubSpotProperties.Company.IsPublic,
-                HubSpotProperties.Company.LastSalesActivityDate,
-                HubSpotProperties.Company.LifecycleStage,
-                HubSpotProperties.Company.OwnerName,
-                HubSpotProperties.Company.TotalRevenue
-            )
-            .WithAssociations(
-                "deals",
-                "line_items",
-                "contacts",
-                "quotes"
-            );
-
-            var (statusCode, data) = await _service.Get<HubSpotObjectDTO>(request);
-
-            if ((int)statusCode < 299 && (int)statusCode > 199)
+            catch (HttpRequestException exHttp)
             {
-                return Ok(data);
+                return StatusCode(402, exHttp.Message);
             }
-
-            return StatusCode((int)statusCode);
         }
     }
 }

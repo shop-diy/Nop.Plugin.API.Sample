@@ -1,6 +1,6 @@
-﻿namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot.DTOs
+﻿namespace Fsl.NopCommerce.Api.Connector.DTOs.HubSpot
 {
-    public class HubSpotAssociationsDTO
+    class HubSpotAssociationsDTO
     {
         public HubSpotAssociationLinkDTO Companies { get; set; }
         public HubSpotAssociationLinkDTO Contacts { get; set; }
@@ -11,12 +11,12 @@
         public HubSpotAssociationLinkDTO Quotes { get; set; }
     }
 
-    public class HubSpotAssociationLinkDTO
+    class HubSpotAssociationLinkDTO
     {
         public HubSpotAssociationDTO[] Results { get; set; }
     }
 
-    public class HubSpotAssociationDTO
+    class HubSpotAssociationDTO
     {
         public string Id { get; set; }
         public string Type { get; set; }

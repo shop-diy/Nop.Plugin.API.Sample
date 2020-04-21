@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Fsl.NopCommerce.Api.Connector.Services.HubSpot;
+using Newtonsoft.Json;
 using System;
 
-namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot.DTOs
+namespace Fsl.NopCommerce.Api.Connector.DTOs.HubSpot
 {
-    public class HubSpotObjectDTO
+    class HubSpotObjectDTO
     {
         public string Id { get; set; }
 

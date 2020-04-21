@@ -1,6 +1,6 @@
-﻿namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot.DTOs
+﻿namespace Fsl.NopCommerce.Api.Connector.DTOs.HubSpot
 {
-    public class HubSpotObjectListDTO
+    class HubSpotObjectListDTO
     {
         public HubSpotObjectDTO[] Results { get; set; }
         public HubSpotPagingDTO Paging { get; set; }

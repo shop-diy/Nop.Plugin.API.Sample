@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NopCommerce.Api.AdapterLibr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fsl-NopCommerce-Api-Connector", "Fsl-NopCommerce-Connector\Fsl-NopCommerce-Api-Connector.csproj", "{AAC30BD0-8563-4454-B1E5-7059C91F5F21}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fsl-NopCommerce-Api-Connector.Model", "Fsl-NopCommerce-Api-Connector.Model\Fsl-NopCommerce-Api-Connector.Model.csproj", "{89930165-DF29-42B3-B148-1DE88B64925F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fsl-NopCommerce-Api-Connector.HubSpot", "Fsl-NopCommerce-Api-Connector.HubSpot\Fsl-NopCommerce-Api-Connector.HubSpot.csproj", "{F1741A20-7132-4CD4-AD78-7B259D35C773}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{AAC30BD0-8563-4454-B1E5-7059C91F5F21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAC30BD0-8563-4454-B1E5-7059C91F5F21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAC30BD0-8563-4454-B1E5-7059C91F5F21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89930165-DF29-42B3-B148-1DE88B64925F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89930165-DF29-42B3-B148-1DE88B64925F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89930165-DF29-42B3-B148-1DE88B64925F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89930165-DF29-42B3-B148-1DE88B64925F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1741A20-7132-4CD4-AD78-7B259D35C773}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1741A20-7132-4CD4-AD78-7B259D35C773}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1741A20-7132-4CD4-AD78-7B259D35C773}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1741A20-7132-4CD4-AD78-7B259D35C773}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,10 +1,9 @@
-﻿using Fsl.NopCommerce.Api.Connector.Extensions;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot.DTOs
+namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
 {
     public class HubSpotPropertiesConverter : JsonConverter<HubSpotProperties>
     {

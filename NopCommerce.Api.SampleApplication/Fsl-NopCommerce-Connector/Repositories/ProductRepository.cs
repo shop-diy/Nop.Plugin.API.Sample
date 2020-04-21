@@ -110,7 +110,10 @@ namespace Fsl.NopCommerce.Api.Connector.Repositories
                     {
                         imageList.Add(image.Value.ToString());
                     }
-                    var imageType = imageList.Select((value, index) => new { id = index, picture_id = index, position = index, src = value, attachment = "" }).ToList();
+
+                    // When picture_id = 0 the API will add a new picture, otherwise it will try to replace a picture with the given id.
+                    // In this case we want to add a new one, because it will simply delete any unused pictures to synchronize
+                    var imageType = imageList.Select((value, index) => new { id = index, picture_id = 0, position = index + 1, src = value, attachment = "" }).ToList();
 
                     // Remove metadata from the rest of description
                     content = content.Remove(0, Pos2 + b.Length);

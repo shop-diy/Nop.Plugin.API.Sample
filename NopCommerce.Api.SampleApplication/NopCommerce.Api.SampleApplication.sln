@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fsl-NopCommerce-Api-Connect
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fsl-NopCommerce-Api-Connector.Model", "Fsl-NopCommerce-Api-Connector.Model\Fsl-NopCommerce-Api-Connector.Model.csproj", "{89930165-DF29-42B3-B148-1DE88B64925F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fsl-NopCommerce-Api-Connector.HubSpot", "Fsl-NopCommerce-Api-Connector.HubSpot\Fsl-NopCommerce-Api-Connector.HubSpot.csproj", "{F1741A20-7132-4CD4-AD78-7B259D35C773}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fsl-NopCommerce-Api-Connector.HubSpot", "Fsl-NopCommerce-Api-Connector.HubSpot\Fsl-NopCommerce-Api-Connector.HubSpot.csproj", "{F1741A20-7132-4CD4-AD78-7B259D35C773}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigCommerceAPI.PCL", "BigCommerceAPI.PCL\BigCommerceAPI.PCL.csproj", "{D5B71BD9-4C31-474F-A9CB-AC3555C011B5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fsl-BigCommerce-Api-Connector", "Fsl-BigCommerce-Connector\Fsl-BigCommerce-Api-Connector.csproj", "{88006CA4-26D7-408C-97BA-59B2BA172CFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{F1741A20-7132-4CD4-AD78-7B259D35C773}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1741A20-7132-4CD4-AD78-7B259D35C773}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1741A20-7132-4CD4-AD78-7B259D35C773}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5B71BD9-4C31-474F-A9CB-AC3555C011B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5B71BD9-4C31-474F-A9CB-AC3555C011B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5B71BD9-4C31-474F-A9CB-AC3555C011B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5B71BD9-4C31-474F-A9CB-AC3555C011B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88006CA4-26D7-408C-97BA-59B2BA172CFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88006CA4-26D7-408C-97BA-59B2BA172CFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88006CA4-26D7-408C-97BA-59B2BA172CFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88006CA4-26D7-408C-97BA-59B2BA172CFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

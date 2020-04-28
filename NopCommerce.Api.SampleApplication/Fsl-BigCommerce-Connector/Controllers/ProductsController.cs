@@ -1,10 +1,10 @@
-﻿using Fsl.NopCommerce.Api.Connector.DTOs;
-using Fsl.NopCommerce.Api.Connector.Repositories;
+﻿using Fsl.BigCommerce.Api.Connector.DTOs;
+using Fsl.BigCommerce.Api.Connector.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
-namespace Fsl.NopCommerce.Api.Connector.Controllers
+namespace Fsl.BigCommerce.Api.Connector.Controllers
 {
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
@@ -19,9 +19,9 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            //var all = await _products.GetAll();
+            var all = await _products.GetAll();
 
-            var f = await _products.SyncAcuProductsToShopify();
+            //var f = await _products.SyncBigCommerceProductToAcu();
 
 
             return Ok(f);

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>Fsl.NopCommerce.Api.Connector</RootNamespace>
+    <RootNamespace>Fsl.BigCommerce.Api.Connector</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,9 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BigCommerceAPI.PCL\BigCommerceAPI.PCL.csproj" />
     <ProjectReference Include="..\Fsl-NopCommerce-Api-Connector.HubSpot\Fsl-NopCommerce-Api-Connector.HubSpot.csproj" />
     <ProjectReference Include="..\Fsl-NopCommerce-Api-Connector.Model\Fsl-NopCommerce-Api-Connector.Model.csproj" />
     <ProjectReference Include="..\NopCommerce.Api.AdapterLibrary\NopCommerce.Api.AdapterLibrary.csproj" />
+
   </ItemGroup>
 
   <ItemGroup>

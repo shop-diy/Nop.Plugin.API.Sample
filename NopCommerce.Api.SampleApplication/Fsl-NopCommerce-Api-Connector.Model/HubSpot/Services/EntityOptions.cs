@@ -30,6 +30,10 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
                                        ExcludedAssociations.Contains("quotes", StringComparison.OrdinalIgnoreCase) ||
                                        ExcludedAssociations.Contains("quote", StringComparison.OrdinalIgnoreCase)
                                      );
+        public bool ExcludeProducts => ExcludedAssociations != null && (
+                                       ExcludedAssociations.Contains("products", StringComparison.OrdinalIgnoreCase) ||
+                                       ExcludedAssociations.Contains("product", StringComparison.OrdinalIgnoreCase)
+                                     );
     }
 
     public static class EntityOptionsExtensions

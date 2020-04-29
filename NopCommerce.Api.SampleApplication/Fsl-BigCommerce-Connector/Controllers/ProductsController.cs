@@ -24,7 +24,7 @@ namespace Fsl.BigCommerce.Api.Connector.Controllers
             //var f = await _products.SyncBigCommerceProductToAcu();
 
 
-            return Ok(f);
+            return Ok(all);
         }
 
         // GET api/<controller>/5

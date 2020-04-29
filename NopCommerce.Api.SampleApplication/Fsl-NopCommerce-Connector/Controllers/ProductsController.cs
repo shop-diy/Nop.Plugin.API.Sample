@@ -1,7 +1,10 @@
 ﻿using Fsl.NopCommerce.Api.Connector.DTOs;
+using Fsl.NopCommerce.Api.Connector.Model.HubSpot;
 using Fsl.NopCommerce.Api.Connector.Repositories;
+using Fsl.NopCommerce.Api.Connector.Services.HubSpot;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Fsl.NopCommerce.Api.Connector.Controllers
@@ -10,8 +13,11 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ProductRepository _products;
-        public ProductsController(ProductRepository productRepository)
+        private readonly HubSpotContext _hubSpot;
+
+        public ProductsController(ProductRepository productRepository, HubSpotContext hubSpotContext)
         {
+            _hubSpot = hubSpotContext ?? throw new ArgumentNullException(nameof(hubSpotContext));
             _products = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
@@ -25,6 +31,51 @@ namespace Fsl.NopCommerce.Api.Connector.Controllers
 
 
             return Ok(f);
+        }
+
+        [HttpGet("hs")]
+        public async Task<IActionResult> GetHubSpotProducts()
+        {
+            try
+            {
+                var newProduct = new HubSpotProduct
+                {
+                    SKU = "TEST04",
+                    Name = "Test Product 4",
+                    UnitPrice = 555.55m,
+                    Description = "This is to test billing frequency field.",
+                    BillingFrequency = BillingFrequency.SemiAnnually
+                };
+
+                await _hubSpot.Products.AddNew(newProduct);
+
+                return Ok();
+            }
+            catch (HttpRequestException exHttp)
+            {
+                return StatusCode(402, exHttp.Message);
+            }
+        }
+
+        [HttpGet("hs/{id}")]
+        public async Task<IActionResult> UpdateHubSpotProduct(string id)
+        {
+            var updatedProduct = new HubSpotProduct
+            {
+                Name = "Cool New Product",
+                Tax = 16.77m
+            };
+
+            try
+            {
+                await _hubSpot.Products.Update(id, updatedProduct);
+
+                return Ok();
+            }
+            catch (HttpRequestException exHttp)
+            {
+                return StatusCode(402, exHttp.Message);
+            }
         }
 
         // GET api/<controller>/5

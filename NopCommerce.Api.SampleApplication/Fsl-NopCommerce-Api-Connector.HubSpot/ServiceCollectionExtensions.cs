@@ -22,6 +22,7 @@ namespace Fsl.NopCommerce.Api.Connector
             services.AddTransient<IHubSpotReadOnlyRepository<HubSpotCompany>, HubSpotCompanyRepository>();
             services.AddTransient<IHubSpotReadOnlyRepository<HubSpotContact>, HubSpotContactRepository>();
             services.AddTransient<IHubSpotReadOnlyRepository<HubSpotLineItem>, HubSpotLineItemRepository>();
+            services.AddTransient<IHubSpotRepository<HubSpotProduct>, HubSpotProductRepository>();
 
             services.AddScoped<HubSpotContext, HubSpotContext>(ctx => new HubSpotContext(ctx));
 

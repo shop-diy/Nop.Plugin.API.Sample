@@ -22,6 +22,9 @@ namespace Fsl.NopCommerce.Api.Connector.Services
             if (!options.ExcludeDeals)
                 associations.Add("deals");
 
+            if (!options.ExcludeProducts && !typeof(TEntity).Equals(typeof(HubSpotProduct)))
+                associations.Add("products");
+
             return associations.ToArray();
         }
     }

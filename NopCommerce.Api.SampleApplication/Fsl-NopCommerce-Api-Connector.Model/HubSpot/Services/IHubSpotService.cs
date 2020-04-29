@@ -10,5 +10,6 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
         Task<IHubSpotServiceResponse> Get(IHubSpotServiceRequest request);
         Task<IHubSpotServiceResponse> Post(IHubSpotServiceRequest request);
         Task<IHubSpotServiceResponse> Put(IHubSpotServiceRequest request);
+        Task<IHubSpotServiceResponse> Patch(IHubSpotServiceRequest request);
     }
 }

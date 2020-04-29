@@ -133,7 +133,8 @@ namespace Fsl.NopCommerce.Api.Connector.Services.HubSpot
                 HubSpotProperties.Product.BillingFrequency,
                 HubSpotProperties.Product.Tax
             )
-            .WithAssociations(options.ToAssociationsArray<HubSpotProduct>());
+            .WithAssociations(options.ToAssociationsArray<HubSpotProduct>())
+            .LimitedTo(100);
 
             var response = await _service.Get<HubSpotObjectListDTO>(request);
 

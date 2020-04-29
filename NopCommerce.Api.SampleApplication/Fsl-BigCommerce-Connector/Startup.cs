@@ -1,6 +1,7 @@
 using Fsl.BigCommerce.Api.Connector.Repositories;
 using Fsl.BigCommerce.Api.Connector.Services;
 using Fsl.BigCommerce.Api.Connector.Services.Acumatica;
+using Fsl.NopCommerce.Api.Connector;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -50,7 +51,7 @@ namespace Fsl.BigCommerce.Api.Connector
                     UseCookies = true,
                     CookieContainer = new CookieContainer()
                 });
-            //services.AddHubSpotServices(GetType().Assembly.GetName().Name);
+            services.AddHubSpotServices(GetType().Assembly.GetName().Name);
             services.AddScoped<CustomerRepository, CustomerRepository>();
             services.AddScoped<ProductRepository, ProductRepository>();
             services.AddTransient<AcumaticaRepository, AcumaticaRepository>();

@@ -1,7 +1,6 @@
 ﻿using Fsl.BigCommerce.Api.Connector.DTOs;
 using Fsl.BigCommerce.Api.Connector.Services;
 using Newtonsoft.Json;
-using ShopifySharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,10 +45,25 @@ namespace Fsl.BigCommerce.Api.Connector.Repositories
         public async Task<ProductCollectionResponse> GetAll()
         {
 
-            BigCommerceAPIClient apiInstance = new BigCommerceAPIClient("zzr434k017");
+            BigCommerceAPIClient apiInstance = new BigCommerceAPIClient();
 
-            return await apiInstance.Client.GetProductsAsync();
+            int i = 0;
 
+            var collection = new ProductCollectionResponse();
+            collection.Data = new List<BigCommerceAPI.PCL.Models.Product>();
+
+            while(true)
+            {
+                var page = await apiInstance.Client.GetProductsAsync(isVisible: 1, page: i);
+                collection.Data.AddRange(page.Data);
+                if(page.Data.Count == 0)
+                {
+                    break;
+                }
+                i++;
+            }
+
+            return collection;
         }
 
         public Task<ProductApi> GetById(int _id)

@@ -178,8 +178,8 @@ namespace BigCommerceAPI.PCL.Controllers
             {
                 { "user-agent", "APIMATIC 2.0" },
                 { "accept", "application/json" },
-                { "X-Auth-Client", "fvczgh4u9625i0vhq8mq96est4kki0f" },
-                { "X-Auth-Token", "cpa8uojguhhuzkiorejrycqh9f1sjy5"}
+                { "X-Auth-Client", Configuration.XAuthClient },
+                { "X-Auth-Token", Configuration.XAuthToken }
             };
 
             //prepare the API call request to fetch the response
